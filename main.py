@@ -36,6 +36,30 @@ class MainWindow(QMainWindow):
     STYLESHEET = """
         background-color: #afc4e3;
     """
+    PORT_SELECTION_STYLESHEET = """
+        color: black;
+    """
+    CONNECT_BUTTON_STYLESHEET = """
+        QPushButton{
+            background-color: #d8e1ee;
+            color: black;
+            border-radius: 10px;
+        }
+        QPushButton:hover{
+            background-color: #33b691;
+        }
+    """
+
+    VIEW_IP_BUTTON_STYLESHEET = """
+        QPushButton{
+            background-color: #d8e1ee;
+            color: black;
+            border-radius: 10px;
+        }
+        QPushButton:hover{
+            background-color: #33b691;
+        }
+    """
     TITLE = "Wi-Fi Scanner"
 
     def __init__(self, *args, **kwargs):
@@ -44,6 +68,21 @@ class MainWindow(QMainWindow):
         self.setFixedSize(MainWindow.WIDTH, MainWindow.HEIGHT)
         self.setStyleSheet(MainWindow.STYLESHEET)
         self.setWindowTitle(MainWindow.TITLE)
+
+        self.port_selection = QComboBox(parent=self)
+        self.port_selection.setStyleSheet(MainWindow.PORT_SELECTION_STYLESHEET)
+        self.port_selection.move(10, 10)
+
+        self.connect_button = QPushButton(parent=self, text="Connect")
+        self.connect_button.setStyleSheet(MainWindow.CONNECT_BUTTON_STYLESHEET)
+        self.connect_button.setCursor(QCursor(Qt.PointingHandCursor))
+        self.connect_button.move(120, 10)
+
+        self.connect_button = QPushButton(parent=self, text="View IP Address")
+        self.connect_button.setFixedSize(160, 30)
+        self.connect_button.setStyleSheet(MainWindow.VIEW_IP_BUTTON_STYLESHEET)
+        self.connect_button.setCursor(QCursor(Qt.PointingHandCursor))
+        self.connect_button.move(230, 10)
 
 
 def main():
