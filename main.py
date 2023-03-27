@@ -14,6 +14,7 @@
 
 
 import serial
+from serial.tools import list_ports
 import sys
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -21,6 +22,68 @@ from PyQt5.QtWidgets import *
 from utils import *
 
 
+class SerialHandler:
+    """
+        Docstring;
+    """
+
+    BUAD_RATES = [300,
+                  600,
+                  750,
+                  1200,
+                  2400,
+                  4800,
+                  9600,
+                  19200,
+                  31250,
+                  38400,
+                  57600,
+                  74880,
+                  115200,
+                  230400,
+                  250000,
+                  460800,
+                  500000,
+                  921600,
+                  1000000,
+                  2000000]
+
+    class Signals(QObject):
+        """
+            Docstring;
+        """
+
+    def __init__(self):
+
+        self.__available_ports = []
+
+    def check_for_available_ports(self):
+        """
+            :ARGS:
+                None;
+
+            :INFO:
+                check out from the available ports on the machine;
+
+            :RETURNS:
+                return list;
+        """
+
+        self.__available_ports = list_ports.comports()
+        print(self.__available_ports)
+
+        return self.__available_ports
+
+    @property
+    def available_ports(self):
+        """
+            Docstring;
+        """
+
+        # first check out for available ports;
+        self.check_for_available_ports()
+
+        return self.__available_ports
 
 
 class WifiLabel(QWidget):
@@ -44,6 +107,10 @@ class MainWindow(QMainWindow):
         background-color: #afc4e3;
     """
     PORT_SELECTION_STYLESHEET = """
+        color: black;
+    """
+
+    BUAD_RATE_SELECTION_STYLESHEET = """
         color: black;
     """
     CONNECT_BUTTON_STYLESHEET = """
@@ -76,9 +143,20 @@ class MainWindow(QMainWindow):
         self.setStyleSheet(MainWindow.STYLESHEET)
         self.setWindowTitle(MainWindow.TITLE)
 
+        self.serial_handler = SerialHandler()
+
         self.port_selection = QComboBox(parent=self)
         self.port_selection.setStyleSheet(MainWindow.PORT_SELECTION_STYLESHEET)
+        self.port_selection.addItems(
+            port.device for port in self.serial_handler.available_ports)
         self.port_selection.move(10, 10)
+
+        self.buad_rate_selection = QComboBox(parent=self)
+        self.buad_rate_selection.setStyleSheet(
+            MainWindow.PORT_SELECTION_STYLESHEET)
+        self.buad_rate_selection.addItems(
+            str(buad_rate) for buad_rate in self.serial_handler.BUAD_RATES)
+        self.buad_rate_selection.move(10, 50)
 
         self.connect_button = QPushButton(parent=self, text="Connect")
         self.connect_button.setFixedSize(100, 30)
