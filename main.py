@@ -56,6 +56,7 @@ class SerialHandler:
     def __init__(self):
 
         self.__available_ports = []
+        self.__active_connections = []
 
     def check_for_available_ports(self):
         """
@@ -74,6 +75,78 @@ class SerialHandler:
 
         return self.__available_ports
 
+    def open_connection(self, device_name: str, buad_rate: int, timeout: int = 1):
+        """
+            :ARGS:
+                device_name: str => the device name or path;
+                buad_rate: int => data buad rate;
+                timeout:int => timeout;
+
+            :INFO:
+                create a serial connection simply out open serial communication;
+
+            :RETURNS:
+                return None;
+        """
+
+        try:
+            conn = serial.Serial(device_name, int(buad_rate), timeout=timeout)
+            self.__active_connections.append(conn)
+
+        except:
+            raise Exception(
+                f"Can't open the port {device_name=} with buad_rate {baudrate=}")
+
+        return None
+
+    def close_connection(self, device_name: str):
+        """
+            :ARGS:
+                device_name:str => the device that we want to close;
+
+            :INFO:
+                close the serial connection for specific device;
+
+            :RETURNS:
+                return bool;
+
+                return True if the device closed, other wise it returns False;
+        """
+
+        if not self.__active_connections:
+            # if theres no connections;
+            return False
+
+        for conn in self.__active_connections.copy():
+            if conn.name == device_name:
+                conn.close()
+
+                # now remove the conn from the active list;
+                self.__active_connections.remove(conn)
+                return True
+
+        return False
+
+    def close_all(self):
+        """
+            :ARGS:
+                None;
+
+            :INFO:
+                close all the active connections;
+
+            :RETURNS:
+                return None;
+
+        """
+
+        for conn in self.__active_connections.copy():
+            self.close_connection(conn.name)
+
+        self.__active_connections.clear()
+
+        return None
+
     @property
     def available_ports(self):
         """
@@ -84,6 +157,14 @@ class SerialHandler:
         self.check_for_available_ports()
 
         return self.__available_ports
+
+    @property
+    def active_connections(self):
+        """
+            View all available connections;
+        """
+
+        return self.__active_connections
 
 
 class WifiLabel(QWidget):
@@ -181,6 +262,20 @@ class MainWindow(QMainWindow):
 
             return None;
         """
+
+        if self.connect_button.text() == "Connect":
+            self.connect_button.setText("Disconnect")
+
+            device_name = self.port_selection.currentText()
+            buad_rate = self.buad_rate_selection.currentText()
+
+            # now open serial Connection;
+            self.serial_handler.open_connection(
+                device_name=device_name, buad_rate=buad_rate)
+
+        else:
+            self.connect_button.setText("Connect")
+            self.serial_handler.close_all()
 
         return None
 
