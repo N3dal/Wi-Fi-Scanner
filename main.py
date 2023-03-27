@@ -167,10 +167,16 @@ class SerialHandler:
         return self.__active_connections
 
 
-class WifiLabel(QWidget):
+class WifiLabel(QFrame):
     """
         custom wifi label;
         that display the network name and other status;
+    """
+
+    WIDTH, HEIGHT = 390, 40
+    STYLESHEET = """
+        background-color: #d8e1ee;
+        color: black;
     """
 
     class Signals(QObject):
@@ -178,7 +184,25 @@ class WifiLabel(QWidget):
             Docstring;
         """
 
-    pass
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setFixedSize(WifiLabel.WIDTH, WifiLabel.HEIGHT)
+        self.setStyleSheet(WifiLabel.STYLESHEET)
+        self.show()
+
+    def change_background_color(self, color: str):
+        """
+            docstring;
+        """
+
+        stylesheet = f"""
+            background-color: {color};
+            color: black;
+        """
+
+        self.setStyleSheet(stylesheet)
+
+        return None
 
 
 class MainWindow(QMainWindow):
@@ -255,6 +279,13 @@ class MainWindow(QMainWindow):
             self.__view_ip_address_button_event)
         self.view_ip_address_button.setCursor(QCursor(Qt.PointingHandCursor))
         self.view_ip_address_button.move(230, 10)
+
+        start = 95
+
+        for _ in range(10):
+            self.wifi = WifiLabel(parent=self)
+            self.wifi.move(5, start)
+            start += 45
 
     def __connect_button_event(self):
         """
