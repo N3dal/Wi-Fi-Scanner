@@ -21,11 +21,18 @@ from PyQt5.QtWidgets import *
 from utils import *
 
 
+
+
 class WifiLabel(QWidget):
     """
         custom wifi label;
         that display the network name and other status;
     """
+
+    class Signals(QObject):
+        """
+            Docstring;
+        """
 
     pass
 
@@ -74,15 +81,45 @@ class MainWindow(QMainWindow):
         self.port_selection.move(10, 10)
 
         self.connect_button = QPushButton(parent=self, text="Connect")
+        self.connect_button.setFixedSize(100, 30)
         self.connect_button.setStyleSheet(MainWindow.CONNECT_BUTTON_STYLESHEET)
+        self.connect_button.clicked.connect(self.__connect_button_event)
         self.connect_button.setCursor(QCursor(Qt.PointingHandCursor))
         self.connect_button.move(120, 10)
 
-        self.connect_button = QPushButton(parent=self, text="View IP Address")
-        self.connect_button.setFixedSize(160, 30)
-        self.connect_button.setStyleSheet(MainWindow.VIEW_IP_BUTTON_STYLESHEET)
-        self.connect_button.setCursor(QCursor(Qt.PointingHandCursor))
-        self.connect_button.move(230, 10)
+        self.view_ip_address_button = QPushButton(
+            parent=self, text="View IP Address")
+        self.view_ip_address_button.setFixedSize(160, 30)
+        self.view_ip_address_button.setStyleSheet(
+            MainWindow.VIEW_IP_BUTTON_STYLESHEET)
+        self.view_ip_address_button.clicked.connect(
+            self.__view_ip_address_button_event)
+        self.view_ip_address_button.setCursor(QCursor(Qt.PointingHandCursor))
+        self.view_ip_address_button.move(230, 10)
+
+    def __connect_button_event(self):
+        """
+            connect button event;
+
+            return None;
+        """
+
+        return None
+
+    def __view_ip_address_button_event(self):
+        # todo: make sure that all docstring looks like this;
+        """
+            :ARGS:
+            None
+
+            :INFO:
+            view ip address button event;
+
+            :RETURNS:
+            return None;
+        """
+
+        return None
 
 
 def main():
